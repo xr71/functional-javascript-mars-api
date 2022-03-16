@@ -5,6 +5,10 @@ body {
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
+  background-image: url("../images/layered-waves-haikei.svg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
 }
 
 header {
@@ -16,6 +20,50 @@ main {
   padding: 20px;
 }
 
+#root {
+  padding: 1em;
+  border-radius: 12px;
+  margin: 0 auto;
+  min-width: 300px;
+  max-width: 100%;
+  background-color: rgb(223, 214, 214);
+}
+
+#root div {
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+
+button {
+  border: none;
+  background-color: #C62368;
+  color: white;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+#root h1{
+  text-align: center;
+}
+#root h2{
+  text-align: center;
+}
+#root h3{
+  text-align: center;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.col-1 { flex-direction: column; flex: 100%; }
+.col-2 { flex-direction: column; flex: 100%; }
+.col-3 { flex-direction: column; flex: 100%; }
+
+
 footer {
   /* footer styles */
 }
@@ -23,16 +71,31 @@ footer {
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
   /* use mobile */
+  #root {
+    max-width: 80%;
+  }
+  
+  .col-1 { flex:33.33%; }
+  
+  .col-2 { flex: 66.66%; }
+  
+  .col-3 { flex: 99.99%; }
 }
 
 /* -------------------  DESKTOP  -------------------- */
 
 @media (min-width: 1224px) {
   /* use mobile */
+  #root {
+    max-width: 60%;
+  }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
 
 @media (min-width: 1824px) {
   /* use mobile */
+  #root {
+    max-width: 50%;
+  }
 }
