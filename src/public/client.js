@@ -33,15 +33,15 @@ const App = (state) => {
         case "Landing":
             return viewLandingPage(rovers);
         case "apod":
-            return `apod`;
+            return viewApodComponent();
         case "Curiosity":
-            return `Curiosity`;
+            return viewRoverComponent("Curiosity");
         case "Opportunity":
-            return `Opportunity`;
+            return viewRoverComponent("Opportunity");
         case "Spirit":
-            return `Spirit`;
+            return viewRoverComponent("Spirit");
         default:
-            return `Hello`
+            return viewLandingPage(rovers);
     }
 
     // return `
@@ -86,16 +86,22 @@ const Greeting = (name) => {
     `
 }
 
+const HeaderComponent = () => {
+    return `
+      <header>
+          <button onclick="hocMakeButton('Landing')">Click here to return to the main dashboard menu</button>
+      </header>
+    `
+}
+
 const viewLandingPage = (rovers) => {
     roversArr = rovers.toJS();
 
     let roverButtons = roversArr.map((rover) => {
         return `<div class="col-1">
-            <button >${rover}</button>
+            <button onclick="hocMakeButton('${rover}')" >${rover}</button>
         </div>`
     })
-
-    console.log(roverButtons)
 
     return `
         <div>
@@ -116,14 +122,18 @@ const viewLandingPage = (rovers) => {
     `
 }
 
-const viewRover = (rover) => {
-    return `Hello ${rover}`
+const viewRoverComponent = (rover) => {
+    return HeaderComponent() + `Hello ${rover}`;
 }
 
 const hocMakeButton = (view) => {
     newState = store.set("view", view);
     updateStore(store, newState);
 
+}
+
+const viewApodComponent = () => {
+    return HeaderComponent() + `Apod Image Goes Here`
 }
 
 // Example of a pure function that renders information requested from the backend
@@ -152,8 +162,6 @@ const ImageOfTheDay = (apod) => {
 
 // Example API call
 const getImageOfTheDay = (state) => {
-
-
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
         .then(
