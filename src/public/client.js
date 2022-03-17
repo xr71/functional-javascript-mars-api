@@ -12,8 +12,6 @@ const root = document.getElementById('root')
 
 const updateStore = (state, newState) => {
     store = state.merge(newState);
-    // console.log(store.toJS());
-
     render(root, store);
 }
 
@@ -31,10 +29,17 @@ const App = (state) => {
 
     // console.log(apod)
 
-
     switch (state.get("view")) {
         case "Landing":
-            return viewLandingPage();
+            return viewLandingPage(rovers);
+        case "apod":
+            return `apod`;
+        case "Curiosity":
+            return `Curiosity`;
+        case "Opportunity":
+            return `Opportunity`;
+        case "Spirit":
+            return `Spirit`;
         default:
             return `Hello`
     }
@@ -81,7 +86,17 @@ const Greeting = (name) => {
     `
 }
 
-const viewLandingPage = () => {
+const viewLandingPage = (rovers) => {
+    roversArr = rovers.toJS();
+
+    let roverButtons = roversArr.map((rover) => {
+        return `<div class="col-1">
+            <button >${rover}</button>
+        </div>`
+    })
+
+    console.log(roverButtons)
+
     return `
         <div>
             <h3>Welcome to Space Exploration with the NASA API</h3>
@@ -89,16 +104,14 @@ const viewLandingPage = () => {
 
         <div>
             <p>Explore Mars Rover Images</p>
-            <div class='row'>
-                <div class='col-1'>Curiosity</div>
-                <div class='col-1'>Opportunity</div>
-                <div class='col-1'>Spirit</div>
+            <div class="row">
+                ${roverButtons.join("")}
             </div>
         </div>
 
         <div>
             <p>Learn about the astronomical photo of the day</p>
-            <button>Show Image</button>
+            <button onclick="hocMakeButton('apod')">Show Image</button>
         </div>
     `
 }
@@ -107,6 +120,11 @@ const viewRover = (rover) => {
     return `Hello ${rover}`
 }
 
+const hocMakeButton = (view) => {
+    newState = store.set("view", view);
+    updateStore(store, newState);
+
+}
 
 // Example of a pure function that renders information requested from the backend
 const ImageOfTheDay = (apod) => {

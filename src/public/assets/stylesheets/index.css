@@ -38,10 +38,14 @@ button {
   border: none;
   background-color: #C62368;
   color: white;
-  padding: 5px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  width: 100%;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin: 5%;
+  width: 90%;
+  border-radius: 10px;
+  text-align: center;
+  top: 50%;
+  left: 50%;
 }
 
 #root h1{
@@ -75,11 +79,9 @@ footer {
     max-width: 80%;
   }
   
-  .col-1 { flex:33.33%; }
-  
-  .col-2 { flex: 66.66%; }
-  
-  .col-3 { flex: 99.99%; }
+  .col-1 { flex: 50%; }
+  .col-2 { flex: 50%; }
+  .col-3 { flex: 50%; }
 }
 
 /* -------------------  DESKTOP  -------------------- */
@@ -89,6 +91,9 @@ footer {
   #root {
     max-width: 60%;
   }
+  .col-1 { flex:33.33%; }
+  .col-2 { flex: 66.66%; }
+  .col-3 { flex: 99.99%; }
 }
 
 /* -------------------  LARGE SCREENS  -------------- */
@@ -98,4 +103,7 @@ footer {
   #root {
     max-width: 50%;
   }
+  .col-1 { flex:33.33%; }
+  .col-2 { flex: 66.66%; }
+  .col-3 { flex: 99.99%; }
 }
