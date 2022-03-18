@@ -36,7 +36,7 @@ const App = (state) => {
         case "Landing":
             return viewLandingPage(rovers);
         case "apod":
-            return viewApodComponent();
+            return viewApodComponent(store);
         case "Curiosity":
             return viewRoverComponent(store, "Curiosity");
         case "Opportunity":
@@ -94,7 +94,7 @@ const viewLandingPage = (rovers) => {
 
     return `
         <div>
-            <h3>Welcome to Space Exploration with the NASA API</h3>
+            <h1>Welcome to Space Exploration with the NASA API</h1>
         </div>
 
         <div>
@@ -112,47 +112,69 @@ const viewLandingPage = (rovers) => {
 }
 
 const viewRoverComponent = (state, rover) => {
-    current_rover = state.get("current_rover").toJS();
+    const current_rover = state.get("current_rover").toJS();
 
-    console.log(current_rover);
+    const { manifest, photos } = current_rover;
 
-
-    if (!current_rover) {
+    if (current_rover.manifest.name !== rover || Object.keys(current_rover.manifest).length === 0 || current_rover.photos.length === 0) {
         getRoverInfo(state, rover);
+    } else {
+        return HeaderComponent() + `
+        <div>
+          <h2>Mars Rover: ${rover}</h2>
+          <h3>MISSION STATUS: ${manifest.status.toUpperCase()}</h3>
+        </div>
+        <div class="row">
+          ${
+            photos.map((photo) => { return `<div class="col-1"> <img src="${photo.img_src}" /> </div>` })
+          }
+        </div>
+        `;
     }
 
-    return HeaderComponent() + `Hello ${rover}`;
+    return "Loading...";
 }
 
 const hocMakeButton = (view) => {
     newState = store.set("view", view);
     updateStore(store, newState);
-
 }
 
-const viewApodComponent = () => {
-    return HeaderComponent() + `Apod Image Goes Here`
-}
+const viewApodComponent = (state) => {
 
-// Example of a pure function that renders information requested from the backend
-const ImageOfTheDay = (apod) => {
-    if (!store.get("apod")) {
-        getImageOfTheDay(store)
-    }
+  // Loading on first time, only fetch if apod not filled in
 
-    // check if the photo of the day is actually type video!
-    if (apod.media_type === "video") {
-        return (`
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.title}</p>
-            <p>${apod.explanation}</p>
-        `)
+    if (!state.get("apod")) {
+        getImageOfTheDay(state)
     } else {
-        return (`
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
-        `)
+        const apod = state.get("apod");
+        let apod_html = "";
+
+        // check if the photo of the day is actually type video!
+        if (apod.media_type === "video") {
+            apod_html = `
+                <p>See today's featured video <a href="${apod.url}">here</a></p>
+                <p>${apod.title}</p>
+                <p>${apod.explanation}</p>
+            `
+        } else {
+            apod_html = `
+                <img src="${apod.image.url}" height="350px" width="100%" />
+                <p>${apod.image.explanation}</p>
+            `
+        }
+
+        return HeaderComponent() + `
+            <div>
+                <h2>Astronomical Photo of the Day</h2>
+            </div>
+            <div>
+                ${apod_html}
+            </div>
+        `
     }
+
+    return "Loading...";
 }
 
 // ------------------------------------------------------  API CALLS
@@ -161,15 +183,29 @@ const getImageOfTheDay = (state) => {
         .then(res => res.json())
         .then(
             apod => {
-                console.log(apod);
-
                 const newState = state.set("apod", apod);
                 updateStore(state, newState);
 
                 return apod
             })
+        .catch(err => console.log(err))
 }
 
 const getRoverInfo = (state, rover) => {
-    return ""
+    fetch(`http://localhost:3000/rover/${rover}`)
+        .then(res => res.json())
+        .then(
+            roverdata => {
+              console.log(roverdata)
+
+              const manifest = Immutable.Map(roverdata.photos.latest_photos[0].rover);
+              const photos = Immutable.List(roverdata.photos.latest_photos.map(({id, img_src, sol, camera, earth_date}) => { return {id, img_src, sol, camera, earth_date} }));
+              const current_rover = Immutable.Map({ manifest: manifest, photos: photos })
+
+              const newState = state.set("current_rover", current_rover);
+              updateStore(state, newState);
+
+              return current_rover;
+            })
+        .catch(err => console.log(err))
 }

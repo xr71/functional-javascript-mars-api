@@ -61,12 +61,15 @@ button {
 
 #root h1{
   text-align: center;
+  padding: 0.25em;
 }
 #root h2{
   text-align: center;
+  padding: 0.25em;
 }
 #root h3{
   text-align: center;
+  padding: 0.25em;
 }
 
 .row {
