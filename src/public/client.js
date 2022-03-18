@@ -119,15 +119,33 @@ const viewRoverComponent = (state, rover) => {
     if (current_rover.manifest.name !== rover || Object.keys(current_rover.manifest).length === 0 || current_rover.photos.length === 0) {
         getRoverInfo(state, rover);
     } else {
+
+        const rover_img_grids = photos.map((photo) => { return `
+            <div class="col-1">
+              <img class="rover-img" src="${photo.img_src}" />
+
+              <p><strong>Photo Date:</strong> ${photo.earth_date}
+              |
+              <strong>Camera:</strong> ${photo.camera.name}</p>
+            </div>
+        ` })
+
         return HeaderComponent() + `
         <div>
-          <h2>Mars Rover: ${rover}</h2>
+          <h2>Discover the Mars Rover: ${rover}</h2>
           <h3>MISSION STATUS: ${manifest.status.toUpperCase()}</h3>
         </div>
+        <div>
+          <p><strong>Launch Date:</strong> ${manifest.launch_date}
+          |
+          <strong>Landing Date:</strong> ${manifest.landing_date}</p>
+        </div>
+
+        <hr />
+        <h2>Latest Photos from ${rover}</h2>
+
         <div class="row">
-          ${
-            photos.map((photo) => { return `<div class="col-1"> <img src="${photo.img_src}" /> </div>` })
-          }
+          ${rover_img_grids.join("")}
         </div>
         `;
     }
