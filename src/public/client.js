@@ -1,11 +1,16 @@
 let store = Immutable.Map({
-    user: Immutable.Map({
+      user: Immutable.Map({
         name: "Student"
     }),
     apod: '',
     rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
-    view: 'Landing'
-})
+    view: 'Landing',
+    current_rover: Immutable.Map({
+      manifest: Immutable.Map({}),
+      photos: Immutable.List([])
+    })
+});
+
 
 // add our markup to the page
 const root = document.getElementById('root')
@@ -16,7 +21,7 @@ const updateStore = (state, newState) => {
 }
 
 const render = async (root, state) => {
-    console.log("Called render:")
+    // console.log("Called render:")
     root.innerHTML = App(state);
 }
 
@@ -27,19 +32,17 @@ const App = (state) => {
     let rovers = state.get("rovers");
     let apod = state.get("apod");
 
-    // console.log(apod)
-
     switch (state.get("view")) {
         case "Landing":
             return viewLandingPage(rovers);
         case "apod":
             return viewApodComponent();
         case "Curiosity":
-            return viewRoverComponent("Curiosity");
+            return viewRoverComponent(store, "Curiosity");
         case "Opportunity":
-            return viewRoverComponent("Opportunity");
+            return viewRoverComponent(store, "Opportunity");
         case "Spirit":
-            return viewRoverComponent("Spirit");
+            return viewRoverComponent(store, "Spirit");
         default:
             return viewLandingPage(rovers);
     }
@@ -72,20 +75,6 @@ window.addEventListener('load', () => {
 })
 
 // ------------------------------------------------------  COMPONENTS
-
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
-        return `
-            <h1>Welcome, ${name}!</h1>
-        `
-    }
-
-    return `
-        <h1>Hello!</h1>
-    `
-}
-
 const HeaderComponent = () => {
     return `
       <header>
@@ -109,7 +98,7 @@ const viewLandingPage = (rovers) => {
         </div>
 
         <div>
-            <p>Explore Mars Rover Images</p>
+            <p>Explore Mars Rovers</p>
             <div class="row">
                 ${roverButtons.join("")}
             </div>
@@ -122,7 +111,16 @@ const viewLandingPage = (rovers) => {
     `
 }
 
-const viewRoverComponent = (rover) => {
+const viewRoverComponent = (state, rover) => {
+    current_rover = state.get("current_rover").toJS();
+
+    console.log(current_rover);
+
+
+    if (!current_rover) {
+        getRoverInfo(state, rover);
+    }
+
     return HeaderComponent() + `Hello ${rover}`;
 }
 
@@ -138,7 +136,6 @@ const viewApodComponent = () => {
 
 // Example of a pure function that renders information requested from the backend
 const ImageOfTheDay = (apod) => {
-    ''
     if (!store.get("apod")) {
         getImageOfTheDay(store)
     }
@@ -159,8 +156,6 @@ const ImageOfTheDay = (apod) => {
 }
 
 // ------------------------------------------------------  API CALLS
-
-// Example API call
 const getImageOfTheDay = (state) => {
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
@@ -173,4 +168,8 @@ const getImageOfTheDay = (state) => {
 
                 return apod
             })
+}
+
+const getRoverInfo = (state, rover) => {
+    return ""
 }

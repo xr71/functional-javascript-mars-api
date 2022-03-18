@@ -27,11 +27,22 @@ main {
   min-width: 300px;
   max-width: 100%;
   background-color: rgb(223, 214, 214);
+  animation-name: FadeIn;
+  animation-duration: 1s;
+  transition-timing-function: linear;
+}
+
+@keyframes FadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
 }
 
 #root div {
   padding-top: 1em;
   padding-bottom: 1em;
+  animation-name: FadeIn;
+  animation-duration: 2s;
+  transition-timing-function: linear;
 }
 
 button {
